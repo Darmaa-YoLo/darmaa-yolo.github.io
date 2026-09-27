@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portfolio</title>
+  <style>
+    :root {
+      --bg: #fafaf9; --fg: #1c1917; --muted: #78716c; --line: #e7e5e4; --accent: #c2410c;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #0c0a09; --fg: #f5f5f4; --muted: #a8a29e; --line: #292524; --accent: #fb923c; }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--fg);
+      font: 17px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    main { max-width: 760px; margin: 0 auto; padding: 72px 20px; }
+    h1 { font-size: 2.6rem; line-height: 1.1; margin: 0; letter-spacing: -0.02em; }
+    h2 {
+      font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--muted); margin: 64px 0 20px; font-weight: 600;
+    }
+    h3 { font-size: 1.1rem; margin: 0 0 4px; }
+    p { margin: 0 0 8px; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .role { color: var(--accent); font-weight: 600; margin: 8px 0 20px; }
+    .muted { color: var(--muted); }
+    .links { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 20px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 8px 0 0; }
+    .tags li { border: 1px solid var(--line); border-radius: 999px; padding: 2px 12px; font-size: 0.85rem; }
+    .item { padding: 20px 0; border-top: 1px solid var(--line); }
+    .item-head { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .item-links { display: flex; gap: 12px; font-size: 0.9rem; }
+    footer { margin-top: 80px; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <main id="app"><p class="muted">Loading…</p></main>
+
+  <script>
+    // Builds an element; text is set via textContent so content.json can't inject HTML.
+    function element(tag, props = {}, children = []) {
+      const node = Object.assign(document.createElement(tag), props);
+      node.append(...children.filter(Boolean));
+      return node;
+    }
+
+    function link(label, url) {
+      return url ? element("a", { href: url, textContent: label, target: "_blank", rel: "noopener" }) : null;
+    }
+
+    function tagList(tags = []) {
+      return tags.length ? element("ul", { className: "tags" }, tags.map(tag => element("li", { textContent: tag }))) : null;
+    }
+
+    function section(title, children) {
+      return children.length ? element("section", {}, [element("h2", { textContent: title }), ...children]) : null;
+    }
+
+    function render(content) {
+      document.title = content.name;
+      const links = (content.links || []).map(item => link(item.label, item.url));
+      if (content.email) links.unshift(link(content.email, "mailto:" + content.email));
+
+      const projects = (content.projects || []).map(project => element("article", { className: "item" }, [
+        element("div", { className: "item-head" }, [
+          element("h3", { textContent: project.title }),
+          element("div", { className: "item-links" }, [link("Live", project.url), link("Code", project.repo)])
+        ]),
+        element("p", { textContent: project.description }),
+        tagList(project.tags)
+      ]));
+
+      const experience = (content.experience || []).map(job => element("article", { className: "item" }, [
+        element("div", { className: "item-head" }, [
+          element("h3", { textContent: `${job.role} · ${job.org}` }),
+          element("span", { className: "muted", textContent: job.period })
+        ]),
+        element("p", { textContent: job.summary })
+      ]));
+
+      document.getElementById("app").replaceChildren(
+        element("header", {}, [
+          element("h1", { textContent: content.name }),
+          element("p", { className: "role", textContent: content.role }),
+          element("p", { textContent: content.bio }),
+          element("div", { className: "links" }, links)
+        ]),
+        section("Projects", projects),
+        section("Experience", experience),
+        section("Skills", content.skills?.length ? [tagList(content.skills)] : []),
+        element("footer", { className: "muted", textContent: `© ${new Date().getFullYear()} ${content.name}` })
+      );
+    }
+
+    fetch("content.json")
+      .then(response => response.json())
+      .then(render)
+      .catch(error => {
+        document.getElementById("app").textContent = "Could not load content.json: " + error.message;
+      });
+  </script>
+</body>
+</html>
