@@ -1,27 +1,46 @@
 {
   "name": "Darmaa Yolo",
   "role": "Software Developer",
+  "location": "",
+  "photo": "images/profile-placeholder.svg",
   "bio": "I build web applications and tools. Replace this with a short paragraph about yourself.",
   "email": "you@example.com",
   "links": [
-    { "label": "GitHub", "url": "https://github.com/darmaa-yolo" },
-    { "label": "LinkedIn", "url": "https://www.linkedin.com/in/your-handle" }
+    {
+      "label": "GitHub",
+      "url": "https://github.com/darmaa-yolo"
+    },
+    {
+      "label": "LinkedIn",
+      "url": "https://www.linkedin.com/in/your-handle"
+    }
   ],
-  "skills": ["JavaScript", "TypeScript", "Python", "SQL", "Git"],
+  "skills": [
+    "JavaScript",
+    "TypeScript",
+    "Python",
+    "SQL",
+    "Git"
+  ],
   "projects": [
     {
       "title": "Project One",
       "description": "One or two sentences about what it does and why it matters.",
       "url": "https://example.com",
       "repo": "https://github.com/darmaa-yolo/project-one",
-      "tags": ["React", "Node.js"]
+      "tags": [
+        "React",
+        "Node.js"
+      ]
     },
     {
       "title": "Project Two",
       "description": "Another project. Leave url or repo empty if not applicable.",
       "url": "",
       "repo": "https://github.com/darmaa-yolo/project-two",
-      "tags": ["Python"]
+      "tags": [
+        "Python"
+      ]
     }
   ],
   "experience": [
